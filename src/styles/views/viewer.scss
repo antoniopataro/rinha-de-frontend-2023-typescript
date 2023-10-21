@@ -1,0 +1,29 @@
+.viewer {
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+  min-height: 100dvh;
+  gap: 24px;
+  padding: 24px 0;
+
+  &__header {
+    width: 638px;
+    margin: 0 auto;
+
+    &__heading {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+  }
+
+  &__main {
+    overflow-y: auto;
+
+    &__tree {
+      width: 638px;
+      margin: 0 auto;
+      word-break: break-word;
+      line-height: 28.24px;
+    }
+  }
+}

@@ -1,18 +1,18 @@
 import "@/styles/views/home.scss";
 
 export const home = `
-    <main class="container">
-        <div class="home">
-            <h1 class="home__title">JSON Tree Viewer</h1>
-            <p class="home__subtitle">
+    <div class="home">
+        <main class="home__main">
+            <h1 class="home__main__title">JSON Tree Viewer</h1>
+            <p class="home__main__subtitle">
                 Simple JSON Viewer that runs completely on-client. No data exchange
             </p>
-            <label for="home__loader" class="home__loader__label">
+            <label for="home__main__loader" class="home__main__loader__label">
                 Load JSON
-                <input hidden id="home__loader" type="file" />
+                <input hidden id="home__main__loader" type="file" />
             </label>
-        </div>
-    </main>
+        </main>
+    </div>
 `;
 
 export const setupHome = () => {
