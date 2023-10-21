@@ -1,4 +1,4 @@
-import "@/styles/templates/home.scss";
+import "@/styles/views/home.scss";
 
 export const home = `
     <main class="container">
@@ -14,3 +14,11 @@ export const home = `
         </div>
     </main>
 `;
+
+export const setupHome = () => {
+  const loader = document.querySelector<HTMLInputElement>("#home__loader")!;
+
+  loader.addEventListener("change", (e) => {
+    console.log(e);
+  });
+};
