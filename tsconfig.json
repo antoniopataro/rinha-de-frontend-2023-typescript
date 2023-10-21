@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
+    "baseUrl": ".",
     "isolatedModules": true,
     "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "module": "ESNext",
@@ -10,6 +11,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
