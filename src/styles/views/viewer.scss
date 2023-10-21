@@ -24,6 +24,63 @@
       margin: 0 auto;
       word-break: break-word;
       line-height: 28.24px;
+
+      &__node {
+        position: relative;
+        width: fit-content;
+
+        &--array {
+          &--index {
+            width: fit-content;
+            list-style: none;
+            color: #bfbfbf;
+            cursor: pointer;
+          }
+        }
+
+        &--object {
+          &--key {
+            width: fit-content;
+            list-style: none;
+            color: #4e9590;
+            cursor: pointer;
+          }
+
+          &--token {
+            color: #f2cabb;
+          }
+        }
+      }
+
+      &__value {
+        width: fit-content;
+
+        &--children {
+          position: relative;
+          width: fit-content;
+          padding-left: 24px;
+
+          &::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background-color: #bfbfbf;
+          }
+        }
+
+        &--string {
+          &::before {
+            content: '"';
+          }
+
+          &::after {
+            content: '"';
+          }
+        }
+      }
     }
   }
 }
