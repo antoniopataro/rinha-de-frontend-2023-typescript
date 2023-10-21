@@ -1,4 +1,4 @@
-import "@/styles/templates/home.css";
+import "@/styles/templates/home.scss";
 
 export const home = `
     <main class="container">

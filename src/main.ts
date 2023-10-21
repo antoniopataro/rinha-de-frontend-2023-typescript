@@ -1,6 +1,6 @@
-import "@/styles/index.css";
+import "@/styles/index.scss";
 
-import "@/styles/templates/index.css";
+import "@/styles/templates/index.scss";
 
 import { home } from "@/templates/home";
 
