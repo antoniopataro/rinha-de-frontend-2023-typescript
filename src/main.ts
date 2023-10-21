@@ -1,7 +1,9 @@
 import "@/styles/index.css";
 
-document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-  <div>
-    hello, world
-  </div>
-`;
+import "@/styles/templates/index.css";
+
+import { home } from "@/templates/home";
+
+const app = document.querySelector<HTMLDivElement>("#app")!;
+
+app.innerHTML = home;
