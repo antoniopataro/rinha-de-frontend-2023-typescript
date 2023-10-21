@@ -12,12 +12,15 @@ const routes = {
     setupView: setupViewer,
     view: viewer,
   },
-} as const;
+};
 
-export const navigate = (route: keyof typeof routes) => {
+export const navigate = <R extends keyof typeof routes>(
+  route: R,
+  props?: Parameters<(typeof routes)[R]["setupView"]>[0]
+) => {
   if (!(route in routes)) {
     console.error(`route ${route} not found`);
-    route = "/";
+    route = "/" as R;
 
     return;
   }
@@ -28,5 +31,5 @@ export const navigate = (route: keyof typeof routes) => {
 
   app.innerHTML = view;
 
-  setupView();
+  setupView(props as any);
 };

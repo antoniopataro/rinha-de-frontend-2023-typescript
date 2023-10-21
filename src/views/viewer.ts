@@ -1,11 +1,15 @@
 import "@/styles/views/viewer.scss";
 
-export const setupViewer = () => {
+type Props = {
+  file: File;
+};
+
+export const setupViewer = ({ file }: Props) => {
   const heading = document.querySelector<HTMLHeadingElement>(
     ".viewer__header__heading"
   )!;
 
-  heading.innerText = "viewer";
+  heading.innerText = file.name;
 };
 
 export const viewer = `
