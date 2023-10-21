@@ -1,9 +1,6 @@
 import "@/styles/index.scss";
+import "@/styles/views/index.scss";
 
-import "@/styles/templates/index.scss";
+import { navigate } from "@/routes/index";
 
-import { home } from "@/templates/home";
-
-const app = document.querySelector<HTMLDivElement>("#app")!;
-
-app.innerHTML = home;
+navigate("/");
