@@ -1,3 +1,5 @@
+import { navigate } from "@/routes";
+
 import "@/styles/views/home.scss";
 
 export const home = `
@@ -16,9 +18,41 @@ export const home = `
 `;
 
 export const setupHome = () => {
-  const loader = document.querySelector<HTMLInputElement>("#home__loader")!;
+  const loader = document.querySelector<HTMLInputElement>(
+    "#home__main__loader"
+  )!;
 
-  loader.addEventListener("change", (e) => {
-    console.log(e);
+  loader.addEventListener("change", async (e) => {
+    if (!e.target) {
+      return;
+    }
+
+    const file = (e.target as HTMLInputElement).files?.[0];
+
+    if (!file || file.type !== "application/json") {
+      return;
+    }
+
+    navigate("/viewer", { file });
+
+    await file.arrayBuffer().then((buffer) => {
+      let data: any;
+
+      try {
+        let startTime = performance.now();
+        data = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer)));
+        console.log("parse took: ", performance.now() - startTime, "ms");
+      } catch (error) {
+        return;
+      }
+
+      document.dispatchEvent(
+        new CustomEvent("data", {
+          detail: {
+            data,
+          },
+        })
+      );
+    });
   });
 };
