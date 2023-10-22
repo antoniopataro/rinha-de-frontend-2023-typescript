@@ -1,6 +1,8 @@
-import { renderer } from "@/helpers/renderer";
+import { Renderer } from "@/helpers/renderer";
 
 import "@/styles/views/viewer.scss";
+
+import HyperList from "hyperlist";
 
 type Props = {
   file: File;
@@ -18,11 +20,32 @@ export const setupViewer = ({ file }: Props) => {
   document.addEventListener("data", (e) => {
     const { data } = (e as CustomEvent).detail;
 
-    console.log(data);
+    const target = document.createElement("div");
+
+    target.classList.add("viewer__main__tree");
+
+    const renderer = new Renderer(target);
 
     let startTime = performance.now();
-    renderer(data, tree);
+    renderer.recursive(data);
     console.log("renderer took: ", performance.now() - startTime, "ms");
+
+    const elements = Array.from(target.childNodes);
+
+    const hyperListConfig = {
+      generate(index: number) {
+        return {
+          element: elements[index],
+          height: 28.23,
+        };
+      },
+      itemHeight: 28.23,
+      total: elements.length,
+    };
+
+    startTime = performance.now();
+    HyperList.create(tree, hyperListConfig);
+    console.log("hyperlist took: ", performance.now() - startTime, "ms");
   });
 };
 
