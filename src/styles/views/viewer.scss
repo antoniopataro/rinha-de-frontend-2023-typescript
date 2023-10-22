@@ -1,7 +1,6 @@
 .viewer {
   display: flex;
   flex-direction: column;
-  width: 100dvw;
   min-height: 100dvh;
   gap: 24px;
   padding: 24px 0;
@@ -17,59 +16,68 @@
   }
 
   &__main {
-    overflow-y: auto;
+    height: calc(100dvh - 130px);
 
     &__tree {
-      width: 638px;
+      display: flex;
+      flex-direction: column;
+      max-width: 638px;
+      height: 100%;
+      align-items: flex-end;
       margin: 0 auto;
       word-break: break-word;
       line-height: 28.24px;
 
-      &__node {
+      [data-children] {
+        cursor: pointer;
+      }
+
+      &__children {
         position: relative;
-        width: fit-content;
+        background-color: #fff;
 
-        &--array {
-          &--index {
-            width: fit-content;
-            list-style: none;
-            color: #bfbfbf;
-            cursor: pointer;
-          }
-        }
-
-        &--object {
-          &--key {
-            width: fit-content;
-            list-style: none;
-            color: #4e9590;
-            cursor: pointer;
-          }
-
-          &--token {
-            color: #f2cabb;
-          }
+        &::before {
+          content: "";
+          position: absolute;
+          left: calc(4px);
+          top: 28.23px;
+          width: 1px;
+          height: 100%;
+          background-color: #bfbfbf;
         }
       }
 
+      &__padstart {
+        max-height: 28.23px;
+        margin-left: 24px;
+        background-color: #fff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &__key,
+      &__index {
+        list-style: none;
+      }
+
+      &__key {
+        color: #4e9590;
+      }
+
+      &__index {
+        color: #bfbfbf;
+      }
+
+      &__token {
+        color: #f2cabb;
+      }
+
       &__value {
-        width: fit-content;
-
-        &--children {
-          position: relative;
-          width: fit-content;
-          padding-left: 24px;
-
-          &::before {
-            content: "";
-            position: absolute;
-            left: 4px;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            background-color: #bfbfbf;
-          }
-        }
+        max-height: 28.23px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         &--string {
           &::before {

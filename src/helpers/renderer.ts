@@ -1,54 +1,87 @@
-const parentPrefix = "viewer__main";
-const prefix = "viewer__main__tree";
+export class Renderer {
+  private current?: HTMLElement;
+  private depth: number = 0;
+  private readonly prefix: string;
+  private readonly target: HTMLElement;
 
-const renderBoolean = (data: any, target: HTMLElement): void => {
-  const boolean = document.createElement("span");
+  constructor(target: HTMLElement) {
+    this.prefix = target.className;
+    this.target = target;
+  }
 
-  boolean.classList.add(`${prefix}__value`);
+  private shouldRenderInTheSameLine(data: any): boolean {
+    if (data === null) {
+      return true;
+    }
 
-  boolean.innerText = (data as boolean).toString();
+    if (["boolean", "number", "string"].includes(typeof data)) {
+      return true;
+    }
 
-  target.appendChild(boolean);
-};
+    return false;
+  }
 
-const renderNumber = (data: any, target: HTMLElement): void => {
-  const number = document.createElement("span");
+  public recursive(data: any, target?: HTMLElement): void {
+    if (typeof data === "boolean") {
+      this.renderBoolean(data, target ?? this.target);
 
-  number.classList.add(`${prefix}__value`);
+      return;
+    }
 
-  number.innerText = (data as number).toString();
+    if (typeof data === "number") {
+      this.renderNumber(data, target ?? this.target);
 
-  target.appendChild(number);
-};
+      return;
+    }
 
-const renderString = (data: any, target: HTMLElement): void => {
-  const string = document.createElement("span");
+    if (typeof data === "string") {
+      this.renderString(data, target ?? this.target);
 
-  string.classList.add(`${prefix}__value-string`);
+      return;
+    }
 
-  string.innerText = data;
+    if (typeof data === "object") {
+      if ((target ?? this.target).childNodes.length !== 0) {
+        this.depth++;
+      }
 
-  target.appendChild(string);
-};
+      this.renderObject(data, target ?? this.target);
 
-export const renderer = (data: any, target: HTMLElement) => {
-  if (typeof data === "boolean") {
-    renderBoolean(data, target);
+      if ((target ?? this.target).childNodes.length !== 0) {
+        this.depth--;
+      }
+
+      return;
+    }
 
     return;
   }
 
-  if (typeof data === "number") {
-    renderNumber(data, target);
+  private renderBoolean(data: any, target: HTMLElement): void {
+    const value = document.createElement("span");
 
-    return;
+    value.classList.add(`${this.prefix}__value--boolean`);
+
+    value.innerText = (data as boolean).toString();
+
+    target.append(value);
   }
 
-  if (typeof data === "object") {
+  private renderNumber(data: any, target: HTMLElement): void {
+    const value = document.createElement("span");
+
+    value.classList.add(`${this.prefix}__value--number`);
+
+    value.innerText = (data as number).toString();
+
+    target.append(value);
+  }
+
+  private renderObject(data: any, target: HTMLElement): void {
     if (data === null) {
       const value = document.createElement("span");
 
-      value.classList.add(`${prefix}__value`);
+      value.classList.add(`${this.prefix}__value`);
 
       value.innerText = "null";
 
@@ -57,112 +90,121 @@ export const renderer = (data: any, target: HTMLElement) => {
       return;
     }
 
-    // also keep track of the number of children for ::before line
     if (Array.isArray(data)) {
-      target.classList.add(`${prefix}__node--array`);
+      if (this.current) {
+        this.current.setAttribute("data-children", data.length.toString());
+        this.current.setAttribute("tabindex", "0");
+      }
 
       data.forEach((v, i) => {
-        const node = document.createElement("div"); // old details
+        const node = document.createElement("div");
 
-        node.classList.add(`${prefix}__node`);
-        node.classList.add(`${prefix}__value`);
+        node.classList.add(`${this.prefix}__padstart`);
 
-        if (
-          !(
-            target.parentElement &&
-            target.parentElement.className === parentPrefix
-          )
-        ) {
-          node.classList.add(`${prefix}__value--children`);
-        }
+        node.style.width = `calc(100% - ${this.depth * 32}px)`;
+        node.style.zIndex = this.target.childNodes.length.toString();
 
-        const index = document.createElement("span"); // old summary should be clickable to collapse and expand children if typeof v === object and !!v
+        const index = document.createElement("span");
 
         index.innerText = `${i.toString()}: `;
 
-        index.classList.add(`${prefix}__node--array--index`);
+        node.append(index);
 
-        node.appendChild(index);
+        target.append(node);
 
-        renderer(v, node);
+        if (this.shouldRenderInTheSameLine(v)) {
+          this.recursive(v, node);
+        } else {
+          node.classList.add(`${this.prefix}__children`);
 
-        target.appendChild(node);
+          this.current = node;
+
+          this.recursive(v);
+        }
       });
 
       return;
     }
 
-    Object.entries(data).forEach(([k, v]) => {
-      const node = document.createElement("div"); // old details
+    const entries = Object.entries(data);
 
-      node.classList.add(`${prefix}__node`);
-      node.classList.add(`${prefix}__value`);
+    if (this.current) {
+      this.current.setAttribute("data-children", entries.length.toString());
+      this.current.setAttribute("tabindex", "0");
+    }
 
-      if (
-        typeof target === "object" &&
-        !(
-          target.parentElement &&
-          target.parentElement.className === parentPrefix
-        )
-      ) {
-        node.classList.add(`${prefix}__value--children`);
-      }
+    entries.forEach(([k, v]) => {
+      const node = document.createElement("div");
 
-      let closingToken: string | undefined;
+      node.classList.add(`${this.prefix}__padstart`);
 
-      const key = document.createElement("span"); // old summary should be clickable to collapse and expand children if typeof v === object and !!v
+      node.style.width = `calc(100% - ${this.depth * 32}px)`;
 
-      key.classList.add(`${prefix}__node--object--key`);
+      node.style.zIndex = this.target.childNodes.length.toString();
+
+      const key = document.createElement("span");
+
+      key.classList.add(`${this.prefix}__key`);
 
       key.innerText = `${k}: `;
 
-      const value = document.createElement(
-        typeof v === "object" && !!v ? "div" : "span"
-      );
+      node.append(key);
 
-      value.classList.add(`${prefix}__node__value`);
+      let closingToken: string | undefined;
 
-      if (typeof v === "object" && !!v) {
+      target.append(node);
+
+      if (this.shouldRenderInTheSameLine(v)) {
+        this.recursive(v, node);
+      } else {
+        node.classList.add(`${this.prefix}__children`);
+
+        this.current = node;
+
         const token = document.createElement("span");
 
-        token.classList.add(`${prefix}__node--object--token`);
+        token.classList.add(`${this.prefix}__token`);
 
         if (Array.isArray(v)) {
           token.innerText = "[";
 
           closingToken = "]";
 
-          key.appendChild(token);
+          node.appendChild(token);
         } else {
           token.innerText = "{";
 
           closingToken = "}";
 
-          key.appendChild(token);
+          node.appendChild(token);
         }
+
+        this.recursive(v);
       }
 
-      renderer(v, value);
-
-      node.appendChild(key);
-      node.appendChild(value);
-
       if (closingToken) {
-        const token = document.createElement("span");
-        token.classList.add("token");
+        const token = document.createElement("div");
+
+        token.classList.add(`${this.prefix}__padstart`);
+        token.classList.add(`${this.prefix}__token`);
+
+        token.style.width = `calc(100% - ${this.depth * 32}px)`;
+        token.style.zIndex = this.target.childNodes.length.toString();
 
         token.innerText = closingToken;
 
-        node.appendChild(token);
+        target.append(token);
       }
-
-      target.appendChild(node);
     });
   }
 
-  if (typeof data === "string") {
-    renderString(data, target);
+  private renderString(data: any, target: HTMLElement): void {
+    const value = document.createElement("span");
 
-    return;
+    value.classList.add(`${this.prefix}__value--string`);
+
+    value.innerText = data;
+
+    target.append(value);
   }
-};
+}
