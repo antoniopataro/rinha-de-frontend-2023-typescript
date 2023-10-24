@@ -8,7 +8,7 @@ declare module "hyperlist" {
         itemHeight: number;
         total: number;
       }
-    ): any;
+    ): typeof HyperList;
     static refresh(
       container: HTMLElement,
       options: {
