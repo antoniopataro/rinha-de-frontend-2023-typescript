@@ -1,51 +1,118 @@
-import { Renderer } from "@/helpers/renderer";
-
 import "@/styles/views/viewer.scss";
 
-import HyperList from "hyperlist";
+import Hyperlist from "hyperlist";
 
-type Props = {
-  file: File;
-};
-
-export const setupViewer = ({ file }: Props) => {
+const setupHeader = ({ fileName }: { fileName: string }) => {
   const heading = document.querySelector<HTMLHeadingElement>(
     ".viewer__header__heading"
   )!;
 
-  heading.innerText = file.name;
+  heading.innerText = fileName;
+};
 
-  const tree = document.querySelector<HTMLDivElement>(".viewer__main__tree")!;
+const setupHyperlist = ({ tree }: { tree: HTMLDivElement }) => {
+  const hyperlist = Hyperlist.create(tree, {
+    generate: (_: number) => ({
+      element: document.createElement("div"),
+      height: 28.23,
+    }),
+    itemHeight: 28.23,
+    total: 1,
+  });
 
-  document.addEventListener("data", (e) => {
-    const { data } = (e as CustomEvent).detail;
+  return hyperlist;
+};
 
-    const target = document.createElement("div");
+const setupRendererThread = ({
+  hyperlist,
+  tree,
+}: {
+  hyperlist: typeof Hyperlist;
+  tree: HTMLDivElement;
+}) => {
+  const prefix = tree.className;
 
-    target.classList.add("viewer__main__tree");
+  const rendererThread = new Worker(
+    new URL("../helpers/renderer-thread.ts", import.meta.url)
+  );
 
-    const renderer = new Renderer(target);
+  rendererThread.onmessage = ({
+    data,
+  }: {
+    data: {
+      depth: number;
+      key?: string;
+      value: string;
+    }[];
+  }) => {
+    if (data === null) {
+      rendererThread!.terminate();
+
+      return;
+    }
+
+    const rows = data;
 
     let startTime = performance.now();
-    renderer.recursive(data);
-    console.log("renderer took: ", performance.now() - startTime, "ms");
+    hyperlist.refresh(tree, {
+      generate: (index: number) => {
+        const { depth, key, value } = rows[index];
 
-    const elements = Array.from(target.childNodes);
+        const node = document.createElement(key ? "div" : "span");
 
-    const hyperListConfig = {
-      generate(index: number) {
+        node.classList.add(`${prefix}__node`);
+
+        node.style.width = `calc(100% - ${depth * 32}px)`;
+
+        if (key) {
+          const knode = document.createElement("span");
+
+          knode.classList.add(`${prefix}__node__key`);
+
+          knode.append(key);
+
+          node.append(knode);
+        }
+
+        const vnode = document.createElement("span");
+
+        vnode.classList.add(`${prefix}__node__value`);
+
+        vnode.append(value);
+
+        node.append(vnode);
+
         return {
-          element: elements[index],
+          element: node,
           height: 28.23,
         };
       },
       itemHeight: 28.23,
-      total: elements.length,
-    };
-
-    startTime = performance.now();
-    HyperList.create(tree, hyperListConfig);
+      total: rows.length,
+    });
     console.log("hyperlist took: ", performance.now() - startTime, "ms");
+  };
+
+  return rendererThread;
+};
+
+export const setupViewer = ({ file }: { file: File }) => {
+  setupHeader({ fileName: file.name });
+
+  const tree = document.querySelector<HTMLDivElement>(".viewer__main__tree")!;
+
+  const hyperlist = setupHyperlist({ tree });
+
+  const rendererThread = setupRendererThread({
+    hyperlist,
+    tree,
+  });
+
+  document.addEventListener("data", (e) => {
+    const { data } = (e as CustomEvent).detail;
+
+    rendererThread.postMessage(data);
+    rendererThread.postMessage(null);
   });
 };
 

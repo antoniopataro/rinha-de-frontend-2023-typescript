@@ -32,61 +32,37 @@
         cursor: pointer;
       }
 
-      &__children {
-        position: relative;
+      &__node {
         background-color: #fff;
 
-        &::before {
-          content: "";
-          position: absolute;
-          left: calc(4px);
-          top: 28.23px;
-          width: 1px;
-          height: 100%;
-          background-color: #bfbfbf;
+        &__key,
+        &__index {
+          list-style: none;
         }
-      }
 
-      &__padstart {
-        max-height: 28.23px;
-        margin-left: 24px;
-        background-color: #fff;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      &__key,
-      &__index {
-        list-style: none;
-      }
-
-      &__key {
-        color: #4e9590;
-      }
-
-      &__index {
-        color: #bfbfbf;
-      }
-
-      &__token {
-        color: #f2cabb;
-      }
-
-      &__value {
-        max-height: 28.23px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        &--string {
-          &::before {
-            content: '"';
-          }
+        &__key {
+          max-height: 28.23px;
+          color: #4e9590;
+          text-overflow: ellipsis;
+          white-space: nowrap;
 
           &::after {
-            content: '"';
+            content: ": ";
           }
+        }
+
+        &__index {
+          color: #bfbfbf;
+        }
+
+        &__token {
+          color: #f2cabb;
+        }
+
+        &__value {
+          max-height: 28.23px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }
