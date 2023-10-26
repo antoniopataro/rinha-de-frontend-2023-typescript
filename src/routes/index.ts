@@ -3,7 +3,7 @@ import { setupViewer, viewer } from "@/views/viewer";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
-export const base = "/rinha-de-frontend-2023-typescript";
+const base = "/rinha-de-frontend-2023-typescript";
 
 const routes = {
   "/": {
