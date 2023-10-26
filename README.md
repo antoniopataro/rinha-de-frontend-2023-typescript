@@ -19,5 +19,6 @@ To run it locally, you can:
 My version can render the _large.json_ in seconds, but the _giant.json_ is still expensive, taking several seconds on the rows mapper (~8s) and on the virtual scroll refresh. With a correct approach to batch refreshes or using a stream parser for JSON files seems like the best way to improve performance in this challenge.
 
 #### Tech
+- hyperlist;
 - typescript;
 - vite.
