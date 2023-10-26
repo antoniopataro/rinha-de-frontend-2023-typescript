@@ -46,7 +46,7 @@ const setupRendererThread = ({
     }[];
   }) => {
     if (data === null) {
-      rendererThread!.terminate();
+      rendererThread.terminate();
 
       return;
     }

@@ -33,24 +33,52 @@ export const setupHome = () => {
       return;
     }
 
-    navigate("/viewer", { file });
-
     await file.arrayBuffer().then((buffer) => {
-      let data: any;
-
-      try {
-        data = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer)));
-      } catch (error) {
-        return;
-      }
-
-      document.dispatchEvent(
-        new CustomEvent("data", {
-          detail: {
-            data,
-          },
-        })
+      const parserThread = new Worker(
+        new URL("../helpers/parser-thread.ts", import.meta.url)
       );
+
+      parserThread.onerror = () => {
+        document.dispatchEvent(new CustomEvent("error"));
+
+        parserThread.terminate();
+      };
+
+      parserThread.onmessage = ({ data }) => {
+        if (data === null) {
+          parserThread.terminate();
+
+          return;
+        }
+
+        navigate("/viewer", { file });
+
+        document.dispatchEvent(
+          new CustomEvent("data", {
+            detail: {
+              data,
+            },
+          })
+        );
+      };
+
+      parserThread.postMessage(
+        new TextDecoder().decode(new Uint8Array(buffer))
+      );
+
+      parserThread.postMessage(null);
     });
+  });
+
+  const main = document.querySelector(".home__main")!;
+
+  document.addEventListener("error", () => {
+    const error = document.createElement("p");
+
+    error.classList.add("home__main__error");
+
+    error.append("Invalid file. Please load a valid JSON file.");
+
+    main.append(error);
   });
 };
