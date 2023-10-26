@@ -3,6 +3,8 @@ import { setupViewer, viewer } from "@/views/viewer";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
+const base = "/rinha-de-frontend-2023-typescript";
+
 const routes = {
   "/": {
     setupView: setupHome,
@@ -25,7 +27,7 @@ export const navigate = <R extends keyof typeof routes>(
     return;
   }
 
-  window.history.pushState(null, "", route);
+  window.history.pushState(null, "", base + route);
 
   const { setupView, view } = routes[route];
 
