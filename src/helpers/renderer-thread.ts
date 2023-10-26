@@ -115,7 +115,9 @@ onmessage = ({ data }) => {
     renderer = new Renderer();
   }
 
+  let startTime = performance.now();
   renderer.render(data);
+  console.log("rows-renderer took: " + (performance.now() - startTime) + "ms");
 
   postMessage(renderer.rows);
 };
