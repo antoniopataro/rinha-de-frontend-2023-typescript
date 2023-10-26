@@ -62,12 +62,22 @@ const setupRendererThread = ({
 
         node.classList.add(`${prefix}__node`);
 
-        node.style.width = `calc(100% - ${depth * 32}px)`;
+        for (let i = 0; i < depth; i++) {
+          const spacer = document.createElement("span");
+
+          spacer.classList.add(`${prefix}__node__spacer`);
+
+          node.append(spacer);
+        }
 
         if (key) {
           const knode = document.createElement("span");
 
-          knode.classList.add(`${prefix}__node__key`);
+          knode.classList.add(
+            !isNaN(parseFloat(key))
+              ? `${prefix}__node__index`
+              : `${prefix}__node__key`
+          );
 
           knode.append(key);
 

@@ -1,58 +1,60 @@
 .viewer {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
-  gap: 24px;
-  padding: 24px 0;
+  height: 100dvh;
+  gap: 10px;
+  padding: 24px 24px 0 24px;
 
   &__header {
-    width: 638px;
+    max-width: 638px;
+    width: 100%;
     margin: 0 auto;
 
     &__heading {
-      font-size: 3rem;
+      font-size: 2rem;
       font-weight: 700;
     }
   }
 
   &__main {
-    height: calc(100dvh - 130px);
+    height: 100%;
 
     &__tree {
       display: flex;
       flex-direction: column;
       max-width: 638px;
       height: 100%;
-      align-items: flex-end;
       margin: 0 auto;
-      word-break: break-word;
-      line-height: 28.24px;
-
-      [data-children] {
-        cursor: pointer;
-      }
+      line-height: 28.23px;
 
       &__node {
-        background-color: #fff;
+        display: flex;
 
         &__key,
         &__index {
-          list-style: none;
-        }
-
-        &__key {
-          max-height: 28.23px;
-          color: #4e9590;
-          text-overflow: ellipsis;
+          display: inline-block;
           white-space: nowrap;
 
           &::after {
-            content: ": ";
+            content: ": ";
           }
+        }
+
+        &__key {
+          color: #4e9590;
         }
 
         &__index {
           color: #bfbfbf;
+        }
+
+        &__spacer {
+          position: relative;
+          left: 1px;
+          display: inline-block;
+          width: 19px;
+          height: 28.23px;
+          border-left: 1px solid #bfbfbf;
         }
 
         &__token {
@@ -60,9 +62,9 @@
         }
 
         &__value {
-          max-height: 28.23px;
-          text-overflow: ellipsis;
+          display: inline-block;
           white-space: nowrap;
+          padding-right: 19px;
         }
       }
     }
