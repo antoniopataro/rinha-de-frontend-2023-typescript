@@ -11,6 +11,10 @@
     align-items: center;
     gap: 24px;
 
+    &__error {
+      color: #bf0e0e;
+    }
+
     &__loader {
       &__label {
         padding: 6px 12px;
