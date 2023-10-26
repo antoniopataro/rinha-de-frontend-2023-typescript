@@ -103,18 +103,12 @@ class Renderer {
 }
 
 let renderer: Renderer | undefined;
-let startTime = 0;
 
 onmessage = ({ data }) => {
   if (data === null) {
     postMessage(null);
-    console.log("renderer took: ", performance.now() - startTime, "ms");
 
     return;
-  }
-
-  if (startTime === 0) {
-    startTime = performance.now();
   }
 
   if (!renderer) {

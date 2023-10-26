@@ -39,9 +39,7 @@ export const setupHome = () => {
       let data: any;
 
       try {
-        let startTime = performance.now();
         data = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer)));
-        console.log("parse took: ", performance.now() - startTime, "ms");
       } catch (error) {
         return;
       }

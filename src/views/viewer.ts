@@ -53,7 +53,6 @@ const setupRendererThread = ({
 
     const rows = data;
 
-    let startTime = performance.now();
     hyperlist.refresh(tree, {
       generate: (index: number) => {
         const { depth, key, value } = rows[index];
@@ -100,7 +99,6 @@ const setupRendererThread = ({
       itemHeight: 28.23,
       total: rows.length,
     });
-    console.log("hyperlist took: ", performance.now() - startTime, "ms");
   };
 
   return rendererThread;
