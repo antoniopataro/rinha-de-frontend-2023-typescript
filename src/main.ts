@@ -1,5 +1,9 @@
 import "@/styles/index.scss";
 
-import { navigate } from "@/routes/index";
+import { base, navigate } from "@/routes/index";
 
 navigate("/");
+
+window.addEventListener("popstate", () => {
+  navigate(window.location.pathname.substring(base.length) as any);
+});
