@@ -94,6 +94,10 @@ const setupRendererThread = ({
 
         vnode.append(value);
 
+        if (["{", "[", "}", "]"].includes(value)) {
+          vnode.classList.add(`${prefix}__node__token`);
+        }
+
         node.append(vnode);
 
         return {
